@@ -14,7 +14,8 @@ SRC= app/app.js \
   app/controllers/navbarCtrl.js \
   app/controllers/forgeViewerCtrl.js \
   app/controllers/loginCtrl.js \
-  app/run/plugin-annotation.js
+  app/run/plugin-annotation.js \
+  app/run/plugin-endpoint.js
 
 OUT= $(OUTDIR)/js/app.compile.min.js
 

@@ -7,20 +7,7 @@ angular.module('app.spinalforge.plugin')
 
       $rootScope.allNotes = []
       // load etc..
-      $rootScope.allNotes = [
-        {
-          title: new Str("test1"),
-        },
-        {
-          title: new Str("test1"),
-        },
-        {
-          title: new Str("test1"),
-        },
-        {
-          title: new Str("test1"),
-        },
-            ]
+
 
 
       spinalModelDictionary.init().then(function (ForgeFile) {
@@ -28,7 +15,7 @@ angular.module('app.spinalforge.plugin')
         console.log("forgeviewerCtrl start 2")
 
         var config3d = {
-          extensions: ['PannelAnnotation', "Autodesk.ADN.Viewing.Extension.Color"]
+          extensions: ["Autodesk.ADN.Viewing.Extension.Color", 'PannelendPoint']
         };
         var options = {
           env: 'AutodeskProduction',
