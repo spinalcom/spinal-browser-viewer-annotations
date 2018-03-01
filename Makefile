@@ -29,7 +29,8 @@ LIBSRC= bower_components/angular/angular.min.js \
   bower_components/golden-layout/dist/goldenlayout.min.js \
   bower_components/angular-material-icons/angular-material-icons.min.js \
   bower_components/jquery-ui/jquery-ui.min.js \
-  bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js
+  bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js \
+  bower_components/chart.js/dist/Chart.bundle.min.js
 
 LIBOUT= $(OUTDIR)/js/lib.compile.min.js
 
@@ -91,6 +92,10 @@ init: bower compile lib css link models
 
 run:
 	@true
-
+  
+tree:
+	make compile
+	rm -rf ../../.browser_organs/viewer-annotations
+	cp www ../../.browser_organs/viewer-annotations -r
 
 .PHONY: all init run compile lib link css create_outdir doc bower models

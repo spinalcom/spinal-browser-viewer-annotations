@@ -506,7 +506,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
         var endpoints = this.model;
 
-
         var dialog = $mdDialog.confirm()
           .ok("Delete !")
           .title('Do you want to remove it?')
@@ -667,8 +666,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       viewOrHide() {
         var endpoints = this.model;
-        console.log(endpoints);
-        // console.log(id);
         var tab_true = [];
         var tab_false = [];
         var i = 0;
@@ -681,17 +678,13 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           else
             tab_false.push(endpoints[j]);
         }
-        console.log("my display tab_true");
-        console.log(tab_true);
-        console.log(tab_false);
         for (j = 0; j < tab_true.length; j++) {
-          console.log(tab_true[j].title.get());
           this.changeItemColor(tab_true[j].id.get());
         }
         for (i = 0; i < tab_false.length; i++) {
-          console.log(tab_false[i].id.get());
           this.restoreColor(tab_false[i].id.get());
         }
+
       }
 
       // viewOrHide(id) {
@@ -1019,90 +1012,145 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         }
       }
 
+      onEndpointChange(timeseries, chartEndpoint) {
+        console.log("debug");
+        console.log(this.current_timeseries);
+        console.log(timeseries);
+        console.log(chartEndpoint);
+        // this.filePanelContent
+        if (!this.data)
+          this.data = {
+            datasets: [{
+              label: '',
+              data: [],
+              fill: false,
+              backgroundColor: '#FFFFFF',
+              borderColor: '#FFFFFF'
+            }]
+          };
+        this.data.datasets[0].data = this.dataset = [];
+        this.data.datasets[0].label = chartEndpoint.title.get();
+
+
+        for (let i = 0; i < timeseries.value.length; i++) {
+          this.dataset.push({
+            y: timeseries.value[i].get(),
+            x: timeseries.time[i].get()
+          });
+        }
+        // console.log(data);
+        if (this.myLineChart)
+          this.myLineChart.update();
+        else {
+          this.myLineChart = new Chart(this.canvas, {
+            type: 'line',
+            data: this.data,
+            options: {
+              //responsive: false,
+              scales: {
+                yAxes: [{
+                  display: true
+                }],
+                xAxes: [{
+                  gridLines: {},
+                  type: 'time'
+                }]
+              }
+            }
+          });
+        }
+
+        console.log(this.data)
+      }
+
       DisplayFilePanel(id) {
         var endpoints = this.model;
 
+        if (this.endpointBinded === true) {
+          this.current_timeseries.unbind(this.current_timeseriesBindedFunc);
+          this.endpointBinded = false;
+        }
+
         if (this.filePanel == null) {
-          this.filePanel = new PanelClass(this.viewer, id);
+          this.filePanel = new PanelClass(this.viewer, 'chart');
           this.filePanel.initializeMoveHandlers(this.filePanel.container);
           this.filePanel.container.appendChild(this.filePanel.createCloseButton());
           this.filePanel.container.style.right = "0px";
           this.filePanel.container.style.width = "400px";
-          this.filePanel.container.style.height = "600px";
+          this.filePanel.container.style.height = "300px";
           this.filePanel.container.padding = "0px";
           // }
 
           // if(this.filePanelContent == null) {
           this.filePanelContent = document.createElement('div');
-          this.filePanelContent.className = "file_panel_content";
-
-          var dragDrop = document.createElement('div');
-          dragDrop.className = "dragDrop";
-
-          var input = document.createElement('input');
-          input.type = 'file';
-          input.id = "modal-new-dropzone-input";
-          input.setAttribute("multiple", "true");
-          input.className = "modal-new-dropzone-input";
-
-          input.onchange = () => {
-            return this.handle_files(input.files);
-          }
-
-          var file_container = document.createElement('label');
-          file_container.innerHTML = `
-                              <span class="modal-new-span-upload">
-                                click to Choose files to upload or Drop them here
-                              </span>
-                              <ul id="modal-new-list-upload"></ul>`;
-
-          file_container.className = "text-center"
-
-          file_container.ondrop = (evt) => {
-            evt.stopPropagation();
-            evt.preventDefault();
-
-            this.handle_files(evt.dataTransfer.files);
-          }
-
-          file_container.ondragover = (evt) => {
-            evt.preventDefault();
-          }
-
-          file_container.htmlFor = "modal-new-dropzone-input"
-
-
-          dragDrop.appendChild(input);
-          dragDrop.appendChild(file_container);
-
-
-          this.filePanelContent.appendChild(dragDrop);
-
-          var files_div = document.createElement('div');
-          files_div.className = 'files_div';
-
-          this.filePanelContent.appendChild(files_div);
           this.filePanel.container.appendChild(this.filePanelContent);
 
-        }
+          this.filePanelContent.className = "file_panel_content";
+          this.canvas = document.createElement('canvas');
+          this.canvas.id = "my_chartEndPoint";
+          this.canvas.style.width = 400;
+          this.canvas.style.height = 300;
+          this.filePanelContent.appendChild(this.canvas);
+          var clear_chart = document.createElement('button');
+          clear_chart.className = "btn btn-primary btn-sm btn-block";
+          clear_chart.innerHTML = '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Clear';
 
+          clear_chart.onclick = () => {
+            var confirm = $mdDialog.confirm()
+              .title('Confirm clear')
+              .ariaLabel('confirm clear chart')
+              .clickOutsideToClose(true)
+              .ok('Clear!')
+              .cancel('Cancel');
+            $mdDialog.show(confirm).then((result) => {
+              // this.AddEndPoint(result);
+              this.current_timeseries.value.clear();
+              this.current_timeseries.time.clear();
+            }, function () {});
+          };
+          // clear_chart.style.width = 100;
+          // clear_chart.style.height = 30;
+          this.filePanelContent.appendChild(clear_chart);
+        }
+        var chartEndpoint;
+        console.log(endpoints);
+        for (let i = 0; i < endpoints.length; i++) {
+          if (endpoints[i].id.get() === id) {
+            chartEndpoint = endpoints[i];
+            break;
+          }
+        }
+        chartEndpoint.TimeSerie.load((mod) => {
+          if (!mod)
+            return;
+          else {
+            console.log(mod);
+            //console.log(mod.get());
+            this.current_timeseries = mod;
+            this.endpointBinded = true;
+            console.log(this.current_timeseries);
+            this.current_timeseriesBindedFunc = this.onEndpointChange.bind(this, this.current_timeseries, chartEndpoint);
+            this.current_timeseries.bind(this.current_timeseriesBindedFunc);
+          }
+
+        });
 
 
         this.filePanel.setVisible(true);
 
 
-        for (let index = 0; index < endpoints.length; index++) {
-          if (endpoints[index].id == id) {
-            this._file_selected = endpoints[index];
-            break;
-          }
-        }
+        // for (let index = 0; index < endpoints.length; index++) {
+        //   if (endpoints[index].id == id) {
+        //     this._file_selected = endpoints[index];
+        //     break;
+        //   }
+        // }
 
-        this.filePanel.setTitle(this._file_selected.title.get());
+        this.filePanel.setTitle('charts');
 
-        endpoints.bind(() => {
-          this.files_display();
-        })
+        // endpoints.bind(() => {
+        //   this.files_display();
+        // })
 
       }
 

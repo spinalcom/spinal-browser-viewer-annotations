@@ -25,7 +25,8 @@
     "jquery-ui": "^1.12.1",
     "font-awesome": "^4.7.0",
     "lf-ng-md-file-input": "^1.5.3",
-    "angular-bootstrap-colorpicker": "^3.0.32"
+    "angular-bootstrap-colorpicker": "^3.0.32",
+    "chart.js": "^2.7.1"
   },
   "devDependencies": {},
   "resolutions": {
