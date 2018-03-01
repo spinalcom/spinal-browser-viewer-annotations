@@ -652,7 +652,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           </md-button>
 
           <md-button class="i_btn" id=${endpoint.id.get()} aria-label="info" ng-click="execute_func_endpoint('file','${endpoint.id.get()}')">
-            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>
           </md-button>
 
         </md-list-item>`;
