@@ -2,8 +2,9 @@ import {
   endPoint
 } from "spinal-lib-forgefile/endPoint";
 
-angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "$mdToast", "authService", "$rootScope", "$compile", "$routeParams", "ngSpinalCore",
-  function (spinalModelDictionary, $mdDialog, $mdToast, authService, $rootScope, $compile, $routeParams, ngSpinalCore) {
+angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "$mdToast", "authService", "$rootScope", "$compile", "$routeParams", "ngSpinalCore", "spinalRegisterViewerPlugin",
+  function (spinalModelDictionary, $mdDialog, $mdToast, authService, $rootScope, $compile, $routeParams, ngSpinalCore, spinalRegisterViewerPlugin) {
+    spinalRegisterViewerPlugin.register("PannelendPoint");
 
     class PannelendPoint {
       constructor(viewer, options) {
@@ -663,6 +664,32 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
         $compile(contener)($rootScope);
       }
 
+      ////////////////////////////////////////////////////////
+      //                                                    //
+      //        button eyes on endpoint pannel old          //
+      //                                                    //
+      ////////////////////////////////////////////////////////
+      setview(id) {
+        var endpoints = this.model;
+        console.log(endpoints);
+        for (var i = 0; i < endpoints.length; i++) {
+          if (endpoints[i].id.get() == id) {
+            console.log(endpoints[i].display.get());
+            if (endpoints[i].display.get() == false) {
+              endpoints[i].display.set(true); // choix des differents capteur affiché
+              endpoints[i].on_off.set(true); // attribut que le client modifie graçe au capteur ( A SUPPRIMER QUAND LE CLIENT SET DES VALEURS GRACE AU CAPTEUR)
+            } else {
+              endpoints[i].display.set(false); // choix des differents capteur affiché
+              endpoints[i].on_off.set(false); // attribut que le client modifie graçe au capteur ( A SUPPRIMER QUAND LE CLIENT SET DES VALEURS GRACE AU CAPTEUR)
+            }
+            console.log(endpoints[i].display.get());
+          }
+        }
+      }
+
+      //////////////////////////////////////////////////////////
+      //      affichage synchronisé des couleurs              //
+      //////////////////////////////////////////////////////////
 
       viewOrHide() {
         var endpoints = this.model;
@@ -673,7 +700,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
         console.log(endpoints);
         for (var j = 0; j < endpoints.length; j++) {
-          if (endpoints[j].display.get() == true)
+          if ((endpoints[j].on_off.get() === true) && (endpoints[j].display.get() === true))
             tab_true.push(endpoints[j]);
           else
             tab_false.push(endpoints[j]);
@@ -687,22 +714,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       }
 
-      // viewOrHide(id) {
 
-      //   var element = document.getElementsByClassName("show" + id)[0];
-      //   var show = element.getAttribute("show");
-      //   console.log(element);
-      //   if (show == "false") {
-      //     element.setAttribute("show", "true");
-      //     this.changeItemColor(id);
-      //     element.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
-      //   } else {
-      //     this.restoreColor(id);
-      //     element.setAttribute("show", "false");
-      //     element.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
-      //   }
-
-      // }
 
       //////////////////////////////////////////////////////////////
       //                  Change container                        //
@@ -920,21 +932,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       }
 
-      setview(id) {
-        var endpoints = this.model;
-        console.log(endpoints);
-        for (var i = 0; i < endpoints.length; i++) {
-          if (endpoints[i].id.get() == id) {
-            console.log(endpoints[i].display.get());
-            if (endpoints[i].display.get() == false) {
-              endpoints[i].display.set(true);
-            } else {
-              endpoints[i].display.set(false);
-            }
-            console.log(endpoints[i].display.get());
-          }
-        }
-      }
+
 
       deteteMessage(id, formDiv) {
 
@@ -1111,7 +1109,22 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
           // clear_chart.style.width = 100;
           // clear_chart.style.height = 30;
           this.filePanelContent.appendChild(clear_chart);
+
+          var add_chart = document.createElement('button');
+          add_chart.className = "btn btn-primary btn-sm btn-block";
+          add_chart.innerHTML = '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Add';
+
+          add_chart.onclick = () => {
+            this.current_timeseries.value.push(Math.random() * 20);
+            this.current_timeseries.time.push(Date.now());
+            console.log(this.current_timeseries.time);
+            console.log(this.current_timeseries.value);
+          };
+          this.filePanelContent.appendChild(add_chart);
         }
+
+
+
         var chartEndpoint;
         console.log(endpoints);
         for (let i = 0; i < endpoints.length; i++) {
