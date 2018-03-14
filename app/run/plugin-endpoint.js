@@ -1,12 +1,8 @@
-import {
-  endPoint
-} from "spinal-lib-forgefile/endPoint";
-
 angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialog", "$mdToast", "authService", "$rootScope", "$compile", "$routeParams", "ngSpinalCore", "spinalRegisterViewerPlugin",
   function (spinalModelDictionary, $mdDialog, $mdToast, authService, $rootScope, $compile, $routeParams, ngSpinalCore, spinalRegisterViewerPlugin) {
-    spinalRegisterViewerPlugin.register("PannelendPoint");
+    spinalRegisterViewerPlugin.register("PanelendPoint");
 
-    class PannelendPoint {
+    class PanelendPoint {
       constructor(viewer, options) {
         Autodesk.Viewing.Extension.call(this, viewer, options);
 
@@ -666,7 +662,7 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
 
       ////////////////////////////////////////////////////////
       //                                                    //
-      //        button eyes on endpoint pannel old          //
+      //        button eyes on endpoint panel old          //
       //                                                    //
       ////////////////////////////////////////////////////////
       setview(id) {
@@ -1213,6 +1209,6 @@ angular.module('app.spinalforge.plugin').run(["spinalModelDictionary", "$mdDialo
       }
 
     } // end class
-    Autodesk.Viewing.theExtensionManager.registerExtension('PannelendPoint', PannelendPoint);
+    Autodesk.Viewing.theExtensionManager.registerExtension('PanelendPoint', PanelendPoint);
   } // end run
 ]);

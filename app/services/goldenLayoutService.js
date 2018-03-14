@@ -28,7 +28,7 @@ angular.module('app.services')
               element.html();
               $compile(element.contents())($rootScope);
             } else {
-              element.html("<div class=\"gpannel-content\" ng-controller=\"" + state.controller + "\" ng-cloak>" +
+              element.html("<div class=\"gpanel-content\" ng-controller=\"" + state.controller + "\" ng-cloak>" +
                 $templateCache.get(state.template) + "</div>");
               $compile(element.contents())($rootScope);
             }

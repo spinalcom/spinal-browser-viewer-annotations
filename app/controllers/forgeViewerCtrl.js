@@ -15,7 +15,7 @@ angular.module('app.spinalforge.plugin')
         console.log("forgeviewerCtrl start 2")
 
         var config3d = {
-          extensions: ["Autodesk.ADN.Viewing.Extension.Color", 'PannelendPoint']
+          extensions: ["Autodesk.ADN.Viewing.Extension.Color", 'PanelendPoint']
         };
         var options = {
           env: 'AutodeskProduction',
